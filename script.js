@@ -1,6 +1,7 @@
+// Reduced-motion
 const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Reveal with slight stagger
+// Reveal on view with soft stagger
 (function () {
   if (prefersReduced) return;
   const els = Array.from(document.querySelectorAll('.fade'));
@@ -8,7 +9,7 @@ const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       const i = els.indexOf(entry.target);
-      entry.target.style.transitionDelay = `${Math.min(i * 40, 240)}ms`; // soft stagger
+      entry.target.style.transitionDelay = `${Math.min(i * 40, 240)}ms`;
       entry.target.classList.add('show');
       io.unobserve(entry.target);
     });
@@ -30,7 +31,7 @@ const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-
   if (y) y.textContent = new Date().getFullYear();
 })();
 
-// Contact mailto
+// Contact form -> mailto
 (function () {
   const form = document.getElementById('contactForm');
   if (!form) return;

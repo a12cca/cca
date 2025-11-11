@@ -1,23 +1,26 @@
-// Smooth “in-view” reveal using Intersection Observer
+// Reduced motion check
+const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// IntersectionObserver for reveal
 (function () {
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
+  if (prefersReduced) return; // skip reveals for reduced motion users
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('show');
-        observer.unobserve(entry.target);
+        io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.18 });
+  }, { threshold: 0.2 });
 
-  document.querySelectorAll('.fade').forEach(function (el) {
-    observer.observe(el);
-  });
+  document.querySelectorAll('.fade').forEach((el) => io.observe(el));
 })();
 
-// Sticky nav subtle state on scroll
+// Sticky nav state on scroll
 (function () {
-  var nav = document.getElementById('navbar');
-  var onScroll = function () {
+  const nav = document.getElementById('navbar');
+  const onScroll = () => {
     if (window.scrollY > 6) nav.classList.add('scrolled');
     else nav.classList.remove('scrolled');
   };
@@ -25,22 +28,22 @@
   onScroll();
 })();
 
-// Year in footer
+// Footer year
 (function () {
-  var y = document.getElementById('year');
+  const y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
 })();
 
-// Contact form mailto handler
+// Contact form -> mailto
 (function () {
-  var form = document.getElementById('contactForm');
+  const form = document.getElementById('contactForm');
   if (!form) return;
 
-  form.addEventListener('submit', function (e) {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
-    var data = new FormData(form);
+    const data = new FormData(form);
 
-    var body = [
+    const body = [
       'Name: ' + (data.get('name') || ''),
       'Email: ' + (data.get('email') || ''),
       'Company: ' + (data.get('company') || ''),
@@ -48,7 +51,6 @@
       'Links: ' + (data.get('links') || '')
     ].join('%0A');
 
-    // opens default mail client
     window.location.href = 'mailto:funding@cca.vc?subject=Funding%20request&body=' + body;
   });
 })();
